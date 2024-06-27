@@ -17,17 +17,19 @@ public class ProducerService {
 
     private static long senderId = 1;
     private final KafkaTemplate<String, Event> kafkaTemplate;
+    private static final String MESSAGING_TOPIC = "messagingTopic";
+    private static final String PLUS_POINTS_TOPIC = "plusPointsTopic";
 
     public MessageSentEvent sendMessage(MessageRequest request) {
         var event = new MessageSentEvent(senderId++, request.getMessage());
-        kafkaTemplate.send("messagingTopic", event);
+        kafkaTemplate.send(MESSAGING_TOPIC, event);
         log.info("Message Sent to messagingTopic");
         return event;
     }
 
     public PlusPointsClaimEvent claimPlusPoints(PlusPointsClaimRequest request) {
         var event = new PlusPointsClaimEvent(request.getClaimId(), request.getClaimAmount());
-        kafkaTemplate.send("plusPointsTopic", event);
+        kafkaTemplate.send(PLUS_POINTS_TOPIC, event);
         log.info("Claim event sent to plusPointsTopic");
         return event;
     }
